@@ -24,6 +24,12 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
  && composer --ansi --version --no-interaction \
  && rm -rf /tmp/* /tmp/.htaccess
 
+# Install PHPUnit
+RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
+ && chmod +x phpunit
+ && mv phpunit /usr/bin/phpunit
+ && phpunit -v
+
 # Install laravel envoy
 RUN composer global require laravel/envoy
 
