@@ -28,10 +28,11 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
 RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
  && chmod +x phpunit \
  && mv phpunit /usr/bin/phpunit \
- && phpunit -v
+ && phpunit --version
 
 # Install laravel envoy
-RUN composer global require laravel/envoy
+RUN composer global require laravel/envoy \
+ && export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 # Install node for Javascript builds
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
