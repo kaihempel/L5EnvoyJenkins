@@ -4,12 +4,18 @@ FROM jenkins:latest
 # Switch to user "root" to install the dependencies
 USER root
 
-RUN apt-get update && apt-get install -y php php-curl build-essential
+RUN apt-get -y update \
+ && apt-get install -y apt-transport-https ca-certificates \
+ && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg \
+ && echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list \
+ && apt-get -y update \
+ && apt-get install -y php7.1-common php7.1-readline php7.1-cli php7.1-gd php7.1-mysql php7.1-mcrypt php7.1-curl php7.1-mbstring php7.1-opcache php7.1-json php7.1-xml build-essential
 
 # Install composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /tmp
 ENV COMPOSER_VERSION 1.5.6
+ENV PATH "$PATH:/tmp/vendor/bin"
 
 RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/b107d959a5924af895807021fcef4ffec5a76aa9/web/installer \
  && php -r " \
@@ -22,7 +28,8 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
     }" \
  && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
  && composer --ansi --version --no-interaction \
- && rm -rf /tmp/* /tmp/.htaccess
+ && rm -rf /tmp/* \
+ && chmod -R 777 /tmp
 
 # Install PHPUnit
 RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
@@ -31,8 +38,7 @@ RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
  && phpunit --version
 
 # Install laravel envoy
-RUN composer global require laravel/envoy \
- && echo "export PATH=${PATH}:/root/.composer/vendor/bin" >> ~/.bash_profile
+RUN composer global require laravel/envoy
 
 # Install node for Javascript builds
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
