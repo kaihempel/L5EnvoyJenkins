@@ -32,7 +32,7 @@ RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
 
 # Install laravel envoy
 RUN composer global require laravel/envoy \
- && export PATH="$PATH:$HOME/.composer/vendor/bin"
+ && echo "export PATH=${PATH}:/root/.composer/vendor/bin" >> ~/.bash_profile
 
 # Install node for Javascript builds
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
