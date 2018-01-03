@@ -1,9 +1,11 @@
 # Jenkins for PHP Laravel builds using Envoy 
 FROM jenkins:latest
+MAINTAINER Kai Hempel <dev@kuweh.de>
 
 # Switch to user "root" to install the dependencies
 USER root
 
+# Install PHP 7.1
 RUN apt-get -y update \
  && apt-get install -y apt-transport-https ca-certificates \
  && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg \
@@ -37,12 +39,16 @@ RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
  && mv phpunit /usr/bin/phpunit \
  && phpunit --version
 
-# Install laravel envoy
+# Install Laravel Envoy
 RUN composer global require laravel/envoy
 
-# Install node for Javascript builds
+# Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
  && apt-get install -y nodejs
 
 # Switch back to "jenkins"
 USER jenkins
+
+# Generate SSH Key on startup
+COPY keygen.sh /usr/local/bin/keygen.sh
+ENTRYPOINT ["/usr/local/bin/keygen.sh", "/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
