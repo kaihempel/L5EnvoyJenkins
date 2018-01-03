@@ -31,7 +31,7 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
  && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
  && composer --ansi --version --no-interaction \
  && rm -rf /tmp/* \
- && chmod -R 777 /tmp
+ && chmod -R 0777 /tmp
 
 # Install PHPUnit
 RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
@@ -40,7 +40,8 @@ RUN wget -O phpunit https://phar.phpunit.de/phpunit-6.phar \
  && phpunit --version
 
 # Install Laravel Envoy
-RUN composer global require laravel/envoy
+RUN composer global require laravel/envoy \
+ && chown -R jenkins /tmp
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
