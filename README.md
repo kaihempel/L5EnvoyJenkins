@@ -11,4 +11,19 @@ Following features added to the base image:
 
 ## Using Envoy inside Jenkins
 
-The Envoy shell command "envoy" is globaly accessable. Use the shell build step to execute the envoy task.
+The Envoy shell command "envoy" is globally accessable. Use the shell build step to execute the envoy task.
+For full envoy documentation see: https://laravel.com/docs/5.5/envoy
+
+Some examples:
+
+Define a task inside "Envoy.blade.php":
+```
+@task('composer')
+    composer install
+@endtask
+```
+
+Exceute the "envoy" shell command inside the Jenkins build job:
+```
+envoy run composer
+```
