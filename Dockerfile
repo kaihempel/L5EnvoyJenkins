@@ -1,5 +1,5 @@
 # Jenkins for PHP Laravel builds using Envoy 
-FROM jenkins:latest
+FROM jenkins/jenkins:lts
 MAINTAINER Kai Hempel <dev@kuweh.de>
 
 # Switch to user "root" to install the dependencies
